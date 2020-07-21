@@ -9,10 +9,10 @@ playervAI::playervAI(QWidget *parent) :
     // Initialize board
     scene = new QGraphicsScene();
     agentTimer = new QTimer();
-    agentTimer->setInterval(1);
-    //agentTimer->start();
+    agentTimer->setInterval(250);
+    agentTimer->start();
 
-    //connect(agentTimer, SIGNAL(timeout()), this, SLOT(make_a_move()));
+    connect(agentTimer, SIGNAL(timeout()), this, SLOT(make_a_move()));
     clearBoard();
     // Fit the view in the scene's bounding rect
     //ui->graphicsView->fitInView(scene->itemsBoundingRect());
@@ -53,7 +53,7 @@ void playervAI::mousePressEvent(QMouseEvent *event)
      int board_x = ((event->y() - 30) / 50);
      int board_y = ((event->x() - 30) / 50);
 
-     qDebug() << QString::number(board_x) << ", " << QString::number(board_y);
+     //qDebug() << QString::number(board_x) << ", " << QString::number(board_y);
 
      // Make sure choosen position is a piece that can be moved
      std::set<std::pair<int, int>> move_set;
@@ -75,7 +75,7 @@ void playervAI::mousePressEvent(QMouseEvent *event)
          // Player choose a valid first move
 
          cache_move_val = game_board.get_state()[board_x][board_y];
-         game_board.set_state(board_x, board_y, 10); // Highlight player piece
+         game_board.set_state(board_x, board_y, cache_move_val * 10); // Highlight player piece
          clearBoard();
          update_board();
          game_state++;
@@ -97,6 +97,8 @@ void playervAI::mousePressEvent(QMouseEvent *event)
             {
                 // Player has selected a valid move, submit this move to the board object and reset game state
                 game_state = 0;
+
+                //qDebug() <<  move[0] << move[1] << move[2] << move[3];
                 if (game_board.process_move(move[0], move[1], move[2], move[3]))
                 {
                     game_over();
@@ -106,9 +108,10 @@ void playervAI::mousePressEvent(QMouseEvent *event)
                 update_board();
 
                 // Let AI make a move
-                make_a_move();
+
+
+                //make_a_move();
                 return;
-                //qDebug() << "you've chosen a valid move";
             }
         }
 
@@ -148,10 +151,16 @@ void playervAI::update_board()
             if (state[j][i] == -1)
                 scene->addRect(x, y, 20, 20, QPen(Qt::black), QBrush(Qt::black));
 
+            if (state[j][i] == -2)
+                scene->addRect(x - 10, y - 10, 40, 40, QPen(Qt::black), QBrush(Qt::black));
+
             else if(state[j][i] == 1)
                 scene->addRect(x, y, 20, 20, QPen(Qt::black), QBrush(Qt::red));
 
-            else if(state[j][i] == 10)
+            else if(state[j][i] == 2)
+                scene->addRect(x - 10, y - 10, 40, 40, QPen(Qt::black), QBrush(Qt::red));
+
+            else if(state[j][i] == 10 or state[j][i] == 20 or state[j][i] == -20 or state[j][i] == -10)
                 scene->addRect(x, y, 20, 20, QPen(Qt::black), QBrush(Qt::green));
         }
     }
@@ -169,7 +178,6 @@ void playervAI::game_over()
 }
 
 
-
 void playervAI::clearBoard()
 {
     // Clean the game board
@@ -179,25 +187,18 @@ void playervAI::clearBoard()
     ui->graphicsView->setFixedHeight((BOARD_SIZE + 1) * 50);
     ui->graphicsView->setFixedWidth((BOARD_SIZE + 1) * 50);
 
-    //qDebug() << QString::number(ui->graphicsView->height());
-    //qDebug() << QString::number(ui->graphicsView->width());
-
-    //ui->graphicsView->scene()->addLine(-190, 0, -140, 100, Qt::DashLine);
-
     // Add the vertical lines first, paint them red
     for (int x = 50; x < BOARD_SIZE * 50; x += 50)
         scene->addLine(x, 0, x, BOARD_SIZE * 50, QPen(Qt::white));
 
     // Now add the horizontal lines, paint them green
-    for (int y=50; y < BOARD_SIZE * 50; y+=50)
+    for (int y = 50; y < BOARD_SIZE * 50; y += 50)
         scene->addLine(0, y , BOARD_SIZE * 50, y, QPen(Qt::white));
 }
 
 void playervAI::make_a_move()
 {
-
-    //qDebug() << "hello there";
-    if (game_board.get_player_turn() == 1) // Not the AI's turn
+    if (game_board.get_player_turn() != -1)
         return;
 
     agentTimer->stop();
@@ -206,7 +207,16 @@ void playervAI::make_a_move()
     std::list<std::vector<int>> move_list;
     game_board.get_available_moves(-1, move_set, move_list);
 
+    if (move_set.size() == 0)
+    {
+        game_over();
+        clearBoard();
+        update_board();
+    }
+
     std::vector<int> move = agent.get_move(move_list, game_board);
+
+    //move = agent.get_random_move(move_list);
 
     if (game_board.process_move(move[0], move[1], move[2], move[3]))
     {

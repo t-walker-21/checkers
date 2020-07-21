@@ -25,7 +25,7 @@ private:
 public:
     board();
     board(const board &b2);
-    bool check_win();
+    int check_win();
     void get_available_moves(int player, std::set<std::pair<int, int>>& move_set, std::list<std::vector<int>>& move_list);
     void print_board();
     std::vector<std::vector<int>> get_state();

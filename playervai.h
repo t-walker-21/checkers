@@ -8,6 +8,7 @@
 #include "minimax.h"
 #include <QDebug>
 #include <QTimer>
+#include <QThread>
 
 namespace Ui {
 class playervAI;

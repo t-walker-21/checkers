@@ -15,7 +15,7 @@ std::vector<int> minimax::get_move(std::list<std::vector<int>> possible_moves, b
     {
         board board_temp = game_board;
         board_temp.process_move(move[0], move[1], move[2], move[3]);
-        int score = minmax(board_temp, 1);
+        int score = minmax(board_temp, 0);
         if (score < min_score)
         {
             min_score = score;
@@ -25,6 +25,7 @@ std::vector<int> minimax::get_move(std::list<std::vector<int>> possible_moves, b
     }
 
     qDebug() << "best score was: " << QString::number(min_score);
+    //qDebug() << "best score was: " << QString::number(best_move[0]);
 
     return best_move;
 
@@ -61,6 +62,11 @@ int minimax::minmax(board game_board, int depth)
             std::set<std::pair<int, int>> move_set;
 
             game_board.get_available_moves(1, move_set, possible_moves);
+
+            if (move_set.size() == 0)
+            {
+
+            }
 
             int max_score = INT_MIN;
 

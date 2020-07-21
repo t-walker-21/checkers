@@ -73,10 +73,18 @@ void board::print_board()
     }
 }
 
-bool board::check_win()
+int board::check_win()
 {
     // Check if game is over
-    return false;
+
+    if (get_remaining_pieces(1) == 0)
+        return -1;
+
+    else if (get_remaining_pieces(-1) == 0)
+        return -1;
+
+    else
+        return 0;
 }
 
 void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_set, std::list<std::vector<int>>& move_list)
@@ -157,7 +165,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
 
         for (auto i: kings_red)
         {
-            qDebug() << "Red king movess: " << i.first << " " << i.second;
+            //qDebug() << "Red king movess: " << i.first << " " << i.second;
             std::vector<int> move;
 
             // Check up moves
@@ -361,7 +369,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
 
         for (auto i: kings_black)
         {
-            qDebug() << "black king moves: " << i.first << " " << i.second;
+            //qDebug() << "black king moves: " << i.first << " " << i.second;
             std::vector<int> move;
 
             // Regular moves (down and left/right)
@@ -380,7 +388,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
 
             if (i.first != BOARD_SIZE - 1 and i.second < BOARD_SIZE - 1 and state[i.first + 1][i.second + 1] == 0) // Can move down and to the right
             {
@@ -397,7 +405,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
 
             // Capture moves (down two and left/right)
             if (i.first != BOARD_SIZE - 1 and i.first != BOARD_SIZE - 2 and i.second < BOARD_SIZE - 2 and state[i.first + 1][i.second + 1] > 0 and state[i.first + 2][i.second + 2] == 0) // Can move down and to the right to capture
@@ -414,7 +422,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
 
             if (i.first != BOARD_SIZE - 1 and i.first != BOARD_SIZE - 2 and i.second > 1 and state[i.first + 1][i.second - 1] > 0 and state[i.first + 2][i.second - 2] == 0) // Can move down and to the left to capture
             {
@@ -430,7 +438,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
 
             // Up moves
 
@@ -450,7 +458,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
 
             if (i.first != 0 and i.second != BOARD_SIZE - 1 and state[i.first - 1][i.second + 1] == 0) // Can move up and to the right
             {
@@ -467,7 +475,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
 
             // Capture moves (up two and left/right)
 
@@ -485,7 +493,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
 
             if (i.first > 1 and i.second < BOARD_SIZE - 2 and state[i.first - 1][i.second + 1] > 0 and state[i.first - 2][i.second + 2] == 0) // Can move up and to the right to capture
             {
@@ -501,7 +509,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            qDebug() << "pass";
+            //qDebug() << "pass";
         }
 
     }
@@ -538,7 +546,7 @@ bool board::process_move(int a, int b, int c, int d)
     // 4. Alternate the game turn
     // 5. Check for game over and return bool
 
-    qDebug() << "processing move: " << a << ", " << b << ", " << c << ", " << d;
+    //qDebug() << "processing move: " << a << ", " << b << ", " << c << ", " << d;
 
     // Get piece rank and color
     int status = state[a][b];
@@ -547,7 +555,7 @@ bool board::process_move(int a, int b, int c, int d)
 
     if (status > 0) // This is a red player
     {
-        if (status == 10) // This is a pawn
+        if (status == 10 or status == 1) // This is a pawn
         {
             pieces_red.erase(std::make_pair(a, b));
             set_state(a, b, 0);
@@ -566,7 +574,7 @@ bool board::process_move(int a, int b, int c, int d)
             }
         }
 
-        else if (status == 20) // This is a king
+        else if (status == 20 or status == 2) // This is a king
         {
             kings_red.erase(std::make_pair(a, b));
             set_state(a, b, 0);
@@ -612,7 +620,7 @@ bool board::process_move(int a, int b, int c, int d)
 
     else // This is a black player
     {
-        if (status == -10) // This is a pawn
+        if (status == -10 or status == -1) // This is a pawn
         {
             pieces_black.erase(std::make_pair(a, b));
             set_state(a, b, 0);
@@ -631,7 +639,7 @@ bool board::process_move(int a, int b, int c, int d)
             }
         }
 
-        else if (status == -20) // This is a king
+        else if (status == -20 or status == -2) // This is a king
         {
             kings_black.erase(std::make_pair(a, b));
             set_state(a, b, 0);
@@ -682,9 +690,6 @@ bool board::process_move(int a, int b, int c, int d)
 
     else
         return false;
-
-
-
 }
 
 /*
