@@ -84,7 +84,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
             std::vector<int> move;
 
             // Regular moves (up and left/right)
-            if (i.second != 0 and state[i.first - 1][i.second - 1] == 0) // Can move up and to the left
+            if (i.first != 0 and i.second != 0 and state[i.first - 1][i.second - 1] == 0) // Can move up and to the left
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -99,7 +99,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            if (i.second != BOARD_SIZE - 1 and state[i.first - 1][i.second + 1] == 0) // Can move up and to the right
+            if (i.first != 0 and i.second != BOARD_SIZE - 1 and state[i.first - 1][i.second + 1] == 0) // Can move up and to the right
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -115,7 +115,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
             }
 
             // Capture moves (up two and left/right)
-            if (state[i.first - 1][i.second - 1] == -1 and state[i.first - 2][i.second - 2] == 0) // Can move up and to the left to capture
+            if (i.first > 1 and i.second > 1 and state[i.first - 1][i.second - 1] == -1 and state[i.first - 2][i.second - 2] == 0) // Can move up and to the left to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -129,7 +129,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            if (state[i.first - 1][i.second + 1] == -1 and state[i.first - 2][i.second + 2] == 0) // Can move up and to the right to capture
+            if (i.first > 1 and i.second < BOARD_SIZE - 2 and state[i.first - 1][i.second + 1] == -1 and state[i.first - 2][i.second + 2] == 0) // Can move up and to the right to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -157,7 +157,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
             std::vector<int> move;
 
             // Regular moves (down and left/right)
-            if (i.second - 1 != -1 and state[i.first + 1][i.second - 1] == 0) // Can move down and to the left
+            if (i.first != BOARD_SIZE - 1 and i.second != 0 and state[i.first + 1][i.second - 1] == 0) // Can move down and to the left
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -172,7 +172,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            if (i.second + 1 != BOARD_SIZE and state[i.first + 1][i.second + 1] == 0) // Can move down and to the right
+            if (i.first != BOARD_SIZE - 1 and i.second < BOARD_SIZE - 1 and state[i.first + 1][i.second + 1] == 0) // Can move down and to the right
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -188,7 +188,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
             }
 
             // Capture moves (down two and left/right)
-            if (state[i.first + 1][i.second + 1] == 1 and state[i.first + 2][i.second + 2] == 0) // Can move down and to the right to capture
+            if (i.first != BOARD_SIZE - 2 and i.second < BOARD_SIZE - 2 and state[i.first + 1][i.second + 1] == 1 and state[i.first + 2][i.second + 2] == 0) // Can move down and to the right to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -202,7 +202,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            if (state[i.first + 1][i.second - 1] == 1 and state[i.first + 2][i.second - 2] == 0) // Can move down and to the left to capture
+            if (i.first != BOARD_SIZE - 2 and i.second > 1 and state[i.first + 1][i.second - 1] == 1 and state[i.first + 2][i.second - 2] == 0) // Can move down and to the left to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
