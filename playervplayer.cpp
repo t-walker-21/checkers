@@ -117,7 +117,7 @@ void playerVplayer::mousePressEvent(QMouseEvent* event)
             {
                 // Player has selected a valid move, submit this move to the board object and reset game state
                 game_state = 0;
-                if (not game_board.process_move(move[0], move[1], move[2], move[3]))
+                if (game_board.process_move(move[0], move[1], move[2], move[3]))
                 {
                     game_over();
                 }
