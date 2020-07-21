@@ -95,7 +95,7 @@ void playerVplayer::mousePressEvent(QMouseEvent* event)
          // Player choose a valid first move
 
          cache_move_val = game_board.get_state()[board_x][board_y];
-         game_board.set_state(board_x, board_y, 10); // Highlight player piece
+         game_board.set_state(board_x, board_y, 10 * cache_move_val); // Highlight player piece
          clearBoard();
          update_board();
          game_state++;
@@ -161,10 +161,16 @@ void playerVplayer::update_board()
             if (state[j][i] == -1)
                 scene->addRect(x, y, 20, 20, QPen(Qt::black), QBrush(Qt::black));
 
+            if (state[j][i] == -2)
+                scene->addRect(x - 10, y - 10, 40, 40, QPen(Qt::black), QBrush(Qt::black));
+
             else if(state[j][i] == 1)
                 scene->addRect(x, y, 20, 20, QPen(Qt::black), QBrush(Qt::red));
 
-            else if(state[j][i] == 10)
+            else if(state[j][i] == 2)
+                scene->addRect(x - 10, y - 10, 40, 40, QPen(Qt::black), QBrush(Qt::red));
+
+            else if(state[j][i] == 10 or state[j][i] == 20 or state[j][i] == -20 or state[j][i] == -10)
                 scene->addRect(x, y, 20, 20, QPen(Qt::black), QBrush(Qt::green));
         }
     }
