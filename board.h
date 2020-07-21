@@ -1,7 +1,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#endif // BOARD_H
+
 
 #include<set>
 #include<vector>
@@ -34,3 +34,5 @@ public:
     bool process_move(int a, int b, int c, int d);
     int get_remaining_pieces(int player);
 };
+
+#endif // BOARD_H

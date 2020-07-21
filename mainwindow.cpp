@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->pushButton, SIGNAL(clicked(bool)), this, SLOT(launch_multiplayer_game()));
+    connect(ui->pushButton_2, SIGNAL(clicked(bool)), this, SLOT(launch_single_player_game()));
 
     /*
     std::vector<std::vector<int>> state = game_board.get_state();
@@ -58,6 +59,21 @@ void MainWindow::launch_multiplayer_game()
 
     // Show the game window
     multiplayer_window->show();
+
+    //this->hide();
+}
+
+void MainWindow::launch_single_player_game()
+{
+    // Instantiate new game window
+    player_window = new playervAI();
+    //connect(multiplayer_window, SIGNAL(return_to_menu()), this, SLOT(show()));
+
+    // Connect pointer handler
+    connect(player_window, SIGNAL(destroyed(QObject*)), this, SLOT(clean_pointers()));
+
+    // Show the game window
+    player_window->show();
 
     //this->hide();
 }
