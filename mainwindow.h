@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <playervplayer.h>
 
 namespace Ui {
 class MainWindow;
@@ -17,6 +18,10 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    playerVplayer* multiplayer_window;
+
+private slots:
+    void launch_multiplayer_game();
 };
 
 #endif // MAINWINDOW_H
