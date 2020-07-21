@@ -27,13 +27,18 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         board.cpp \
-        playervplayer.cpp
+        playervplayer.cpp \
+    playervai.cpp \
+    minimax.cpp
 
 HEADERS += \
         mainwindow.h \
         board.h \
-        playervplayer.h
+        playervplayer.h \
+    playervai.h \
+    minimax.h
 
 FORMS += \
         mainwindow.ui \
-        playervplayer.ui
+        playervplayer.ui \
+    playervai.ui
