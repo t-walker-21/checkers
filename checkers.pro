@@ -25,10 +25,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+        board.cpp \
+        playervplayer.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+        board.h \
+        playervplayer.h
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+        playervplayer.ui
