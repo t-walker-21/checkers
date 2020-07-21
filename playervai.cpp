@@ -9,10 +9,10 @@ playervAI::playervAI(QWidget *parent) :
     // Initialize board
     scene = new QGraphicsScene();
     agentTimer = new QTimer();
-    agentTimer->setInterval(1000);
-    agentTimer->start();
+    agentTimer->setInterval(1);
+    //agentTimer->start();
 
-    connect(agentTimer, SIGNAL(timeout()), this, SLOT(make_a_move()));
+    //connect(agentTimer, SIGNAL(timeout()), this, SLOT(make_a_move()));
     clearBoard();
     // Fit the view in the scene's bounding rect
     //ui->graphicsView->fitInView(scene->itemsBoundingRect());
@@ -53,13 +53,13 @@ void playervAI::mousePressEvent(QMouseEvent *event)
      int board_x = ((event->y() - 30) / 50);
      int board_y = ((event->x() - 30) / 50);
 
-     //qDebug() << QString::number(board_x) << ", " << QString::number(board_y);
+     qDebug() << QString::number(board_x) << ", " << QString::number(board_y);
 
      // Make sure choosen position is a piece that can be moved
      std::set<std::pair<int, int>> move_set;
      std::list<std::vector<int>> move_list;
 
-     qDebug() << "look right here: " << QString::number(game_board.get_player_turn());
+     //qDebug() << "look right here: " << QString::number(game_board.get_player_turn());
 
      game_board.get_available_moves(game_board.get_player_turn(), move_set, move_list);
 
@@ -101,8 +101,12 @@ void playervAI::mousePressEvent(QMouseEvent *event)
                 {
                     game_over();
                 }
+
                 clearBoard();
                 update_board();
+
+                // Let AI make a move
+                make_a_move();
                 return;
                 //qDebug() << "you've chosen a valid move";
             }
@@ -131,6 +135,9 @@ void playervAI::update_board()
     // Update remaining pieces label
     ui->label_2->setText("RED REMAINING PIECES: " + QString::number(game_board.get_remaining_pieces(1)));
     ui->label_3->setText("BLACK REMAINING PIECES: " + QString::number(game_board.get_remaining_pieces(-1)));
+
+    ui->label_6->setText("BLACK KINGS: " + QString::number(game_board.get_num_kings(-1)));
+    ui->label_7->setText("RED KINGS: " + QString::number(game_board.get_num_kings(1)));
 
     std::vector<std::vector<int>> state = game_board.get_state();
 
@@ -197,9 +204,9 @@ void playervAI::make_a_move()
 
     std::set<std::pair<int, int>> move_set;
     std::list<std::vector<int>> move_list;
-    game_board.get_available_moves(game_board.get_player_turn(), move_set, move_list);
+    game_board.get_available_moves(-1, move_set, move_list);
 
-    std::vector<int> move = agent.get_random_move(move_list);
+    std::vector<int> move = agent.get_move(move_list, game_board);
 
     if (game_board.process_move(move[0], move[1], move[2], move[3]))
     {

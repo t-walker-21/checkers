@@ -24,7 +24,7 @@ private:
 
 public:
     board();
-    board copy();
+    board(const board &b2);
     bool check_win();
     void get_available_moves(int player, std::set<std::pair<int, int>>& move_set, std::list<std::vector<int>>& move_list);
     void print_board();
@@ -33,6 +33,8 @@ public:
     void set_state(int i, int j, int v);
     bool process_move(int a, int b, int c, int d);
     int get_remaining_pieces(int player);
+    int get_num_pawns(int player);
+    int get_num_kings(int player);
 };
 
 #endif // BOARD_H

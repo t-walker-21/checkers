@@ -1,6 +1,16 @@
 #include "board.h"
 #include<QDebug>
 
+board::board(const board &b2)
+{
+    state = b2.state;
+    player_turn = b2.player_turn;
+    pieces_black = b2.pieces_black;
+    pieces_red = b2.pieces_red;
+    kings_black = b2.kings_black;
+    kings_red = b2.kings_red;
+}
+
 board::board()
 {
     // Initialize board
@@ -253,7 +263,7 @@ bool board::process_move(int a, int b, int c, int d)
 
     if (std::abs(a - c) == 2)
     {
-       qDebug() << "********CAPTURE*******";
+       //qDebug() << "********CAPTURE*******";
         capture = true;
 
         dx = a - c;
@@ -313,6 +323,18 @@ bool board::process_move(int a, int b, int c, int d)
         }
     }
 
+    if (c == 0 and player_turn == -1)
+    {
+        pieces_red.erase(std::make_pair(c, d));
+        kings_red.insert(std::make_pair(c, d));
+    }
+
+    if (c == BOARD_SIZE - 1 and player_turn == 1)
+    {
+        pieces_black.erase(std::make_pair(c, d));
+        kings_black.insert(std::make_pair(c, d));
+    }
+
     if (pieces_black.size() + kings_black.size() == 0 or pieces_red.size() + kings_red.size() == 0)
         return true;
 
@@ -326,4 +348,21 @@ int board::get_remaining_pieces(int player)
         return pieces_red.size() + kings_red.size();
 
     return pieces_black.size() + kings_black.size();
+}
+
+int board::get_num_kings(int player)
+{
+    if (player == 1)
+        return kings_red.size();
+
+     return kings_black.size();
+}
+
+int board::get_num_pawns(int player)
+{
+    if (player == 1)
+        return pieces_red.size();
+
+    return pieces_black.size();
+
 }
