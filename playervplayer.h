@@ -27,6 +27,11 @@ private:
     board game_board;
     QGraphicsScene* scene;
     void update_board();
+    void clearBoard();
+    int game_state;
+    int cache_move_val;
+    std::pair<int, int> chosen_move;
+    void game_over();
 
 };
 

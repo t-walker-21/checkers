@@ -26,7 +26,11 @@ public:
     board();
     board copy();
     bool check_win();
-    void get_available_moves(bool player, std::set<std::pair<int, int>>& move_set, std::list<std::vector<int>>& move_list);
+    void get_available_moves(int player, std::set<std::pair<int, int>>& move_set, std::list<std::vector<int>>& move_list);
     void print_board();
     std::vector<std::vector<int>> get_state();
+    int get_player_turn();
+    void set_state(int i, int j, int v);
+    bool process_move(int a, int b, int c, int d);
+    int get_remaining_pieces(int player);
 };
