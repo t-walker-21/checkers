@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "board.h"
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -10,8 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     connect(ui->pushButton, SIGNAL(clicked(bool)), this, SLOT(launch_multiplayer_game()));
 
-    board game_board;
-
+    /*
     std::vector<std::vector<int>> state = game_board.get_state();
 
     QString s;
@@ -42,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
         qDebug() << QString::number(mov.first) +  "," + QString::number(mov.second);
     }*/
 
-
 }
 
 MainWindow::~MainWindow()
@@ -52,8 +49,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::launch_multiplayer_game()
 {
+    // Instantiate new game window
     multiplayer_window = new playerVplayer();
     //connect(multiplayer_window, SIGNAL(return_to_menu()), this, SLOT(show()));
+
+    // Connect pointer handler
+    connect(multiplayer_window, SIGNAL(destroyed(QObject*)), this, SLOT(clean_pointers()));
+
+    // Show the game window
     multiplayer_window->show();
-    this->hide();
+
+    //this->hide();
+}
+
+void MainWindow::clean_pointers()
+{
+    qDebug() << "here";
+    delete multiplayer_window;
 }
