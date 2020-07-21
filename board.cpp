@@ -125,7 +125,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
             }
 
             // Capture moves (up two and left/right)
-            if (i.first > 1 and i.second > 1 and state[i.first - 1][i.second - 1] == -1 and state[i.first - 2][i.second - 2] == 0) // Can move up and to the left to capture
+            if (i.first > 1 and i.second > 1 and state[i.first - 1][i.second - 1] < 0 and state[i.first - 2][i.second - 2] == 0) // Can move up and to the left to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -139,7 +139,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            if (i.first > 1 and i.second < BOARD_SIZE - 2 and state[i.first - 1][i.second + 1] == -1 and state[i.first - 2][i.second + 2] == 0) // Can move up and to the right to capture
+            if (i.first > 1 and i.second < BOARD_SIZE - 2 and state[i.first - 1][i.second + 1] < 0 and state[i.first - 2][i.second + 2] == 0) // Can move up and to the right to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -537,6 +537,8 @@ bool board::process_move(int a, int b, int c, int d)
     // 3. Promote any pawns to kings
     // 4. Alternate the game turn
     // 5. Check for game over and return bool
+
+    qDebug() << "processing move: " << a << ", " << b << ", " << c << ", " << d;
 
     // Get piece rank and color
     int status = state[a][b];
