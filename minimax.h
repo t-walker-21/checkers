@@ -17,7 +17,7 @@ public:
     std::vector<int> get_random_move(std::list<std::vector<int>> possible_moves);
 
 private:
-    int minmax(board game_board, int depth);
+    int minmax(board game_board, int depth, int alpha, int beta);
     int searchDepth;
 
 
