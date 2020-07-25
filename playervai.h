@@ -33,11 +33,12 @@ private:
     int cache_move_val;
     std::pair<int, int> chosen_move;
     void game_over();
-    minimax agent;
+    minimax agent, agent_2;
     QTimer* agentTimer;
 
 private slots:
     void make_a_move();
+    void make_a_move2();
 };
 
 #endif // PLAYERVAI_H

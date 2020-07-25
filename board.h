@@ -3,9 +3,10 @@
 
 
 
-#include<set>
-#include<vector>
-#include<list>
+#include <set>
+#include <vector>
+#include <list>
+#include <queue>
 #define BOARD_SIZE 8
 
 class board
@@ -26,7 +27,7 @@ public:
     board();
     board(const board &b2);
     int check_win();
-    void get_available_moves(int player, std::set<std::pair<int, int>>& move_set, std::list<std::vector<int>>& move_list);
+    void get_available_moves(int player, std::set<std::pair<int, int>>& move_set, std::priority_queue<std::pair<int, std::vector<int> > > &move_list);
     void print_board();
     std::vector<std::vector<int>> get_state();
     int get_player_turn();

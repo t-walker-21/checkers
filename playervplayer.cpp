@@ -77,9 +77,9 @@ void playerVplayer::mousePressEvent(QMouseEvent* event)
 
      // Make sure choosen position is a piece that can be moved
      std::set<std::pair<int, int>> move_set;
-     std::list<std::vector<int>> move_list;
+     std::priority_queue<std::pair<int, std::vector<int>>> move_list;
 
-     qDebug() << "look right here: " << QString::number(game_board.get_player_turn());
+     //qDebug() << "look right here: " << QString::number(game_board.get_player_turn());
 
      game_board.get_available_moves(game_board.get_player_turn(), move_set, move_list);
 
@@ -105,14 +105,18 @@ void playerVplayer::mousePressEvent(QMouseEvent* event)
      if (game_state == 1) // A piece is already chosen, process the second click
      {
          move_set.clear();
-         move_list.clear();
+         move_list = std::priority_queue<std::pair<int, std::vector<int>>>();
 
          game_board.get_available_moves(game_board.get_player_turn(), move_set, move_list);
 
          // Iterate through list of moves availble and confirm that a valid choice was made
 
-        for (auto move: move_list)
+        std::pair<int, std::vector<int>> move_pair;
+        while (!move_list.empty())
         {
+            move_pair = move_list.top();
+            move_list.pop();
+            auto move = move_pair.second;
             if (move[0] == chosen_move.first and move[1] == chosen_move.second and move[2] == board_x and move[3] == board_y)
             {
                 // Player has selected a valid move, submit this move to the board object and reset game state

@@ -9,10 +9,11 @@ playervAI::playervAI(QWidget *parent) :
     // Initialize board
     scene = new QGraphicsScene();
     agentTimer = new QTimer();
-    agentTimer->setInterval(250);
+    agentTimer->setInterval(750);
     agentTimer->start();
 
     connect(agentTimer, SIGNAL(timeout()), this, SLOT(make_a_move()));
+    //connect(agentTimer, SIGNAL(timeout()), this, SLOT(make_a_move2()));
     clearBoard();
     // Fit the view in the scene's bounding rect
     //ui->graphicsView->fitInView(scene->itemsBoundingRect());
@@ -29,6 +30,7 @@ playervAI::~playervAI()
 
 void playervAI::mousePressEvent(QMouseEvent *event)
 {
+
     // 430 is max(x)
     // 30 is min(x)
 
@@ -57,7 +59,7 @@ void playervAI::mousePressEvent(QMouseEvent *event)
 
      // Make sure choosen position is a piece that can be moved
      std::set<std::pair<int, int>> move_set;
-     std::list<std::vector<int>> move_list;
+     std::priority_queue<std::pair<int, std::vector<int>>> move_list;
 
      //qDebug() << "look right here: " << QString::number(game_board.get_player_turn());
 
@@ -85,14 +87,18 @@ void playervAI::mousePressEvent(QMouseEvent *event)
      if (game_state == 1) // A piece is already chosen, process the second click
      {
          move_set.clear();
-         move_list.clear();
+         move_list = std::priority_queue<std::pair<int, std::vector<int>>>();
 
          game_board.get_available_moves(game_board.get_player_turn(), move_set, move_list);
 
          // Iterate through list of moves availble and confirm that a valid choice was made
 
-        for (auto move: move_list)
+        while (!move_list.empty())
         {
+            auto move_item = move_list.top();
+            move_list.pop();
+
+            auto move = move_item.second;
             if (move[0] == chosen_move.first and move[1] == chosen_move.second and move[2] == board_x and move[3] == board_y)
             {
                 // Player has selected a valid move, submit this move to the board object and reset game state
@@ -204,10 +210,10 @@ void playervAI::make_a_move()
     agentTimer->stop();
 
     std::set<std::pair<int, int>> move_set;
-    std::list<std::vector<int>> move_list;
+    std::priority_queue<std::pair<int, std::vector<int>>> move_list;
     game_board.get_available_moves(-1, move_set, move_list);
 
-    if (move_set.size() == 0)
+    if (move_list.size() == 0)
     {
         game_over();
         clearBoard();
@@ -215,6 +221,41 @@ void playervAI::make_a_move()
     }
 
     std::vector<int> move = agent.get_move(move_list, game_board);
+
+    //move = agent.get_random_move(move_list);
+
+    if (game_board.process_move(move[0], move[1], move[2], move[3]))
+    {
+        game_over();
+        clearBoard();
+        update_board();
+    }
+
+    clearBoard();
+    update_board();
+
+    agentTimer->start();
+}
+
+void playervAI::make_a_move2()
+{
+    if (game_board.get_player_turn() != 1)
+        return;
+
+    agentTimer->stop();
+
+    std::set<std::pair<int, int>> move_set;
+    std::priority_queue<std::pair<int, std::vector<int>>> move_list;
+    game_board.get_available_moves(1, move_set, move_list);
+
+    if (move_list.size() == 0)
+    {
+        game_over();
+        clearBoard();
+        update_board();
+    }
+
+    std::vector<int> move = agent_2.get_move(move_list, game_board);
 
     //move = agent.get_random_move(move_list);
 
