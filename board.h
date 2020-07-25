@@ -35,6 +35,7 @@ public:
     int get_remaining_pieces(int player);
     int get_num_pawns(int player);
     int get_num_kings(int player);
+    int debug_count;
 };
 
 #endif // BOARD_H

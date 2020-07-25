@@ -15,51 +15,55 @@ board::board()
 {
     // Initialize board
 
+
+    debug_count = 0;
+
+
     // First put zeros on board
-    for (int i = 0; i < BOARD_SIZE; i++)
-    {
-        std::vector<int> vec;
-        for (int j = 0; j < BOARD_SIZE; j++)
+        for (int i = 0; i < BOARD_SIZE; i++)
         {
-            vec.push_back(0);
+            std::vector<int> vec;
+            for (int j = 0; j < BOARD_SIZE; j++)
+            {
+                vec.push_back(0);
+            }
+            state.push_back(vec);
         }
-        state.push_back(vec);
+
+        // Now, place players 1 will be red, -1 will be black. Also, populate piece sets
+        for (int i = 1; i < BOARD_SIZE; i += 2)
+        {
+            // Black player
+            state[0][i] = -1;
+            state[2][i] = -1;
+
+            pieces_black.insert(std::make_pair(0, i));
+            pieces_black.insert(std::make_pair(2, i));
+
+            // Red Player
+            state[6][i] = 1;
+            pieces_red.insert(std::make_pair(6, i));
+        }
+
+        for (int i = 0; i < BOARD_SIZE; i += 2)
+        {
+            // Black player
+            state[1][i] = -1;
+            pieces_black.insert(std::make_pair(1, i));
+
+            // Red Player
+            state[5][i] = 1;
+            state[7][i] = 1;
+
+            pieces_red.insert(std::make_pair(5, i));
+            pieces_red.insert(std::make_pair(7, i));
+        }
+
+        //print_board();
+
+        // Player one goes first (RED)
+        player_turn = 1;
     }
-
-    // Now, place players 1 will be red, -1 will be black. Also, populate piece sets
-    for (int i = 1; i < BOARD_SIZE; i += 2)
-    {
-        // Black player
-        state[0][i] = -1;
-        state[2][i] = -1;
-
-        pieces_black.insert(std::make_pair(0, i));
-        pieces_black.insert(std::make_pair(2, i));
-
-        // Red Player
-        state[6][i] = 1;
-        pieces_red.insert(std::make_pair(6, i));
-    }
-
-    for (int i = 0; i < BOARD_SIZE; i += 2)
-    {
-        // Black player
-        state[1][i] = -1;
-        pieces_black.insert(std::make_pair(1, i));
-
-        // Red Player
-        state[5][i] = 1;
-        state[7][i] = 1;
-
-        pieces_red.insert(std::make_pair(5, i));
-        pieces_red.insert(std::make_pair(7, i));
-    }
-
-    //print_board();
-
-    // Player one goes first (RED)
-    player_turn = 1;
-}
 
 void board::print_board()
 {
@@ -91,6 +95,8 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
 {
     // Populate a list of possible moves for the player
 
+    //qDebug() << "collecting moves for player";
+
     if (player == 1)
     {
         //qDebug() << "player one turn";
@@ -98,6 +104,7 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
         // Iterate through all regular red pieces and calculate moves
         for (auto i: pieces_red)
         {
+
             //qDebug() << i.first << " " << i.second;
             std::vector<int> move;
 
@@ -186,6 +193,8 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
+            //qDebug() << "will i show up here";
+
             if (i.first != 0 and i.second != BOARD_SIZE - 1 and state[i.first - 1][i.second + 1] == 0) // Can move up and to the right
             {
                 // Hash the fact that this piece has a possible move
@@ -234,6 +243,8 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
 
             // Check down moves
 
+
+
             // Regular moves (down and left/right)
             if (i.first != BOARD_SIZE - 1 and i.second != 0 and state[i.first + 1][i.second - 1] == 0) // Can move down and to the left
             {
@@ -250,6 +261,8 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
+
+
             if (i.first != BOARD_SIZE - 1 and i.second < BOARD_SIZE - 1 and state[i.first + 1][i.second + 1] == 0) // Can move down and to the right
             {
                 // Hash the fact that this piece has a possible move
@@ -265,8 +278,9 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
+
             // Capture moves (down two and left/right)
-            if (i.first != BOARD_SIZE - 2 and i.second < BOARD_SIZE - 2 and state[i.first + 1][i.second + 1] < 0 and state[i.first + 2][i.second + 2] == 0) // Can move down and to the right to capture
+            if (i.first < BOARD_SIZE - 2 and i.second < BOARD_SIZE - 2 and state[i.first + 1][i.second + 1] < 0 and state[i.first + 2][i.second + 2] == 0) // Can move down and to the right to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -280,7 +294,10 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
                 move.clear();
             }
 
-            if (i.first != BOARD_SIZE - 2 and i.second > 1 and state[i.first + 1][i.second - 1] < 0 and state[i.first + 2][i.second - 2] == 0) // Can move down and to the left to capture
+            //qDebug() << "checking down moves: " << QString::number(debug_count);
+
+
+            if (i.first < BOARD_SIZE - 2 and i.second > 1 and state[i.first + 1][i.second - 1] < 0 and state[i.first + 2][i.second - 2] == 0) // Can move down and to the left to capture
             {
                 // Hash the fact that this piece has a possible move
                 move_set.insert(std::make_pair(i.first, i.second));
@@ -297,8 +314,13 @@ void board::get_available_moves(int player, std::set<std::pair<int, int>>& move_
         }
     }
 
-    else
+
+
+
+    if (player == -1)
     {
+        //qDebug() << "collecting moves for black player";
+
 
         // Iterate through all regular black pieces and calculate moves
         for (auto i: pieces_black)
@@ -591,7 +613,7 @@ bool board::process_move(int a, int b, int c, int d)
 
         if (std::abs(a - c) == 2)
         {
-           //qDebug() << "********CAPTURE*******";
+           qDebug() << "********CAPTURE*******";
             capture = true;
             dx = a - c;
             dy = b - d;
@@ -613,6 +635,7 @@ bool board::process_move(int a, int b, int c, int d)
         if (capture)
         {
             set_state(a + dx, b + dy, 0);
+            qDebug() << "setting state: " << QString::number(a + dx) << ", " << QString::number(b + dy);
             pieces_black.erase(std::make_pair(a + dx, b + dy));
             kings_black.erase(std::make_pair(a + dx, b + dy));
         }
@@ -685,11 +708,44 @@ bool board::process_move(int a, int b, int c, int d)
 
     player_turn *= -1;
 
+    // Check for terminating conditions
+
+    // A player is out of piece
+
     if (pieces_black.size() + kings_black.size() == 0 or pieces_red.size() + kings_red.size() == 0)
         return true;
 
-    else
-        return false;
+    // A player is dead-locked
+
+
+
+    std::list<std::vector<int>> possible_moves;
+    std::set<std::pair<int, int>> move_set;
+
+
+    //qDebug() << "Here before get all moves";
+    get_available_moves(1, move_set, possible_moves);
+
+    //qDebug() << "Almost out of process move! ";
+
+    if (possible_moves.size() == 0)
+        return true;
+
+
+    move_set.clear();
+    possible_moves.clear();
+
+    get_available_moves(-1, move_set, possible_moves);
+
+    //qDebug() << "At bottom of process move! ";
+
+    if (possible_moves.size() == 0)
+        return true;
+
+
+    // Non of these game terminating conditions were met, return fasle for NOT game over
+
+     return false;
 }
 
 /*
